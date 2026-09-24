@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Candidate, Client, RejectionRecord } from '../types';
 import { structureRejectionFeedback } from '../engine/aiFeedbackParser';
-import { X, Sparkles, AlertCircle, CheckCircle2, ShieldAlert } from 'lucide-react';
+import {
+  X,
+  Sparkles,
+  ShieldAlert,
+  CheckCircle2,
+  AlertCircle,
+  MessageSquare,
+  HelpCircle,
+} from 'lucide-react';
 
 interface RejectionModalProps {
   candidate: Candidate;
@@ -22,10 +30,22 @@ const CATEGORIES = [
 ];
 
 const SAMPLE_FEEDBACKS = [
-  'I liked her profile but she smokes occasionally and I am not comfortable with that.',
-  'She lives in Hyderabad which is too far for my life and work in Bangalore.',
-  'Great background, but he decided he does not want children, which is a hard deal breaker.',
-  'Her work hours in high-growth startup seem very demanding for family life right now.',
+  {
+    label: 'Smoking Deal-Breaker',
+    text: 'I liked her profile but she smokes occasionally and I am not comfortable with that.',
+  },
+  {
+    label: 'Location / Commute',
+    text: 'She lives in Hyderabad which is too far for my life and work in Bangalore.',
+  },
+  {
+    label: 'Family / Children',
+    text: 'Great background, but he decided he does not want children, which is a hard deal breaker.',
+  },
+  {
+    label: 'Work Demands',
+    text: 'Her work hours in high-growth startup seem very demanding for family life right now.',
+  },
 ];
 
 export const RejectionModal: React.FC<RejectionModalProps> = ({
@@ -38,7 +58,7 @@ export const RejectionModal: React.FC<RejectionModalProps> = ({
   const [feedbackText, setFeedbackText] = useState<string>('');
   const [aiResult, setAiResult] = useState<ReturnType<typeof structureRejectionFeedback> | null>(null);
 
-  // Re-run AI structure parser when feedback text changes
+  // Parse feedback via AI NLP classifier when text changes
   useEffect(() => {
     if (feedbackText.trim().length > 3) {
       const parsed = structureRejectionFeedback(feedbackText, client);
@@ -56,8 +76,8 @@ export const RejectionModal: React.FC<RejectionModalProps> = ({
     }
   };
 
-  const handleSelectSample = (sample: string) => {
-    setFeedbackText(sample);
+  const handleSelectSample = (sampleText: string) => {
+    setFeedbackText(sampleText);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -85,66 +105,70 @@ export const RejectionModal: React.FC<RejectionModalProps> = ({
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
+      <div className="modal-dialog modal-dialog-lg" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true">
+        {/* MODAL HEADER */}
         <div className="modal-header">
-          <div>
-            <h3>Record Client Rejection Feedback</h3>
-            <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-              Candidate: <strong>{candidate.name}</strong> • Client: <strong>{client.name}</strong>
+          <div className="modal-title-wrap">
+            <h3 className="modal-title">Why was this profile rejected?</h3>
+            <p className="modal-subtitle">
+              Logging client feedback for <strong>{candidate.name}</strong> • Client: <strong>{client.name}</strong>
             </p>
           </div>
-          <button onClick={onClose} style={{ color: 'var(--text-muted)' }}>
-            <X size={20} />
+          <button className="modal-close-btn" onClick={onClose} aria-label="Close modal">
+            <X size={18} />
           </button>
         </div>
 
         <form onSubmit={handleSubmit}>
           <div className="modal-body">
-            {/* 1. STRUCTURED CATEGORIES */}
-            <div>
-              <label style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: '0.4rem' }}>
-                1. Select Structured Reason(s):
+            {/* 1. STRUCTURED REASONS */}
+            <div className="form-group">
+              <label className="form-label">
+                <span>1. Select primary structured reason(s)</span>
+                <span className="label-helper">Choose one or more categories</span>
               </label>
-              <div className="category-checkbox-grid">
+
+              <div className="category-chips-grid">
                 {CATEGORIES.map((cat) => {
                   const isChecked = selectedCategories.includes(cat);
                   return (
-                    <div
+                    <button
                       key={cat}
-                      className={`category-chip-label ${isChecked ? 'selected' : ''}`}
+                      type="button"
+                      className={`cat-chip-btn ${isChecked ? 'is-selected' : ''}`}
                       onClick={() => toggleCategory(cat)}
                     >
-                      <input
-                        type="checkbox"
-                        checked={isChecked}
-                        onChange={() => {}} // handled by parent div click
-                        style={{ accentColor: 'var(--primary-rose)' }}
-                      />
-                      <span>{cat}</span>
-                    </div>
+                      <span className={`chip-indicator ${isChecked ? 'checked' : ''}`}>
+                        {isChecked && '✓'}
+                      </span>
+                      <span className="chip-text">{cat}</span>
+                    </button>
                   );
                 })}
               </div>
             </div>
 
-            {/* 2. FREE TEXT CLIENT FEEDBACK */}
-            <div>
-              <label style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-secondary)', display: 'block', marginBottom: '0.4rem' }}>
-                2. Client's Unstructured Feedback (Email / WhatsApp note):
-              </label>
+            {/* 2. FREE-TEXT CLIENT FEEDBACK */}
+            <div className="form-group">
+              <div className="label-row">
+                <label className="form-label">
+                  <span>2. Additional client feedback</span>
+                  <span className="label-helper">Paste email or WhatsApp note</span>
+                </label>
+              </div>
 
-              {/* Sample feedback chips for fast evaluator test */}
-              <div style={{ marginBottom: '0.5rem' }}>
-                <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Quick sample scenarios:</span>
-                <div className="quick-chip-group">
+              {/* QUICK SAMPLE SCENARIOS */}
+              <div className="sample-scenarios-strip">
+                <span className="samples-heading">Test scenarios:</span>
+                <div className="samples-pills">
                   {SAMPLE_FEEDBACKS.map((sample, idx) => (
                     <button
                       key={idx}
                       type="button"
-                      className="quick-chip-btn"
-                      onClick={() => handleSelectSample(sample)}
+                      className="sample-pill-btn"
+                      onClick={() => handleSelectSample(sample.text)}
                     >
-                      Scenario {idx + 1}
+                      {sample.label}
                     </button>
                   ))}
                 </div>
@@ -152,16 +176,8 @@ export const RejectionModal: React.FC<RejectionModalProps> = ({
 
               <textarea
                 rows={3}
-                style={{
-                  width: '100%',
-                  padding: '0.65rem',
-                  border: '1px solid var(--border-subtle)',
-                  borderRadius: 'var(--radius-md)',
-                  fontSize: '0.85rem',
-                  lineHeight: '1.4',
-                  resize: 'vertical',
-                }}
-                placeholder="Paste client email or WhatsApp feedback here..."
+                className="feedback-textarea"
+                placeholder="Paste client email or WhatsApp feedback here (e.g. 'I liked her profile but she smokes occasionally...')..."
                 value={feedbackText}
                 onChange={(e) => setFeedbackText(e.target.value)}
               />
@@ -169,48 +185,60 @@ export const RejectionModal: React.FC<RejectionModalProps> = ({
 
             {/* 3. AI STRUCTURED INTERPRETATION PREVIEW */}
             {aiResult && (
-              <div className="ai-preview-box">
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span className="ai-badge">
-                    <Sparkles size={11} /> AI Feedback Classifier
-                  </span>
-                  <span style={{ fontSize: '0.7rem', color: '#86198f', fontStyle: 'italic' }}>
-                    Mocked NLP Engine • Confidence: {Math.round(aiResult.confidence * 100)}%
-                  </span>
+              <div className="ai-interpretation-card">
+                <div className="ai-card-top">
+                  <div className="ai-brand-pill">
+                    <Sparkles size={12} className="ai-spark" />
+                    <span>AI-Assisted Classification</span>
+                  </div>
+                  <div className="ai-conf-tag">
+                    Confidence: <strong>{aiResult.confidence > 0.9 ? 'High' : 'Medium'}</strong> ({Math.round(aiResult.confidence * 100)}%)
+                  </div>
                 </div>
 
-                <div style={{ fontSize: '0.82rem', color: '#4a044e' }}>
-                  <strong>Extracted Reason:</strong> {aiResult.primaryReason} ({aiResult.category})
+                <div className="ai-details-grid">
+                  <div className="ai-detail-item">
+                    <span className="ai-detail-label">Category:</span>
+                    <strong className="ai-detail-val">{aiResult.category}</strong>
+                  </div>
+                  <div className="ai-detail-item">
+                    <span className="ai-detail-label">Reason:</span>
+                    <strong className="ai-detail-val">{aiResult.primaryReason}</strong>
+                  </div>
                 </div>
 
                 {aiResult.wasAvoidableConflict ? (
-                  <div style={{ background: '#fef2f2', border: '1px solid #fecaca', padding: '0.5rem 0.75rem', borderRadius: 6, fontSize: '0.78rem', color: '#991b1b', display: 'flex', alignItems: 'flex-start', gap: '0.4rem' }}>
-                    <ShieldAlert size={14} style={{ flexShrink: 0, marginTop: 1 }} />
-                    <div>
-                      <strong>Avoidable Preference Conflict Detected:</strong>
-                      <div>{aiResult.conflictedPreferenceExplanation}</div>
-                      <div style={{ fontSize: '0.72rem', color: '#b91c1c', marginTop: 2 }}>
-                        Insight: This matches the 35% of rejections that failed on known preferences!
-                      </div>
+                  <div className="avoidable-conflict-banner">
+                    <ShieldAlert size={16} className="conflict-icon" />
+                    <div className="conflict-content">
+                      <strong className="conflict-title">Avoidable Preference Conflict Detected</strong>
+                      <p className="conflict-desc">{aiResult.conflictedPreferenceExplanation}</p>
+                      <span className="conflict-note">
+                        Insight: Fixes the 35% of rejections that failed on already-known preferences.
+                      </span>
                     </div>
                   </div>
                 ) : (
-                  <div style={{ fontSize: '0.75rem', color: '#6b21a8' }}>
-                    <strong>Insight:</strong> Nuanced subjective feedback. Stored as soft learning signal for future ranking.
+                  <div className="nuance-feedback-banner">
+                    <CheckCircle2 size={15} className="nuance-icon" />
+                    <span className="nuance-text">
+                      Nuanced feedback recorded. Stored as soft learning signal to calibrate future ranking weights.
+                    </span>
                   </div>
                 )}
               </div>
             )}
           </div>
 
+          {/* MODAL FOOTER */}
           <div className="modal-footer">
-            <button type="button" className="btn-secondary" onClick={onClose}>
+            <button type="button" className="btn-modal-secondary" onClick={onClose}>
               Cancel
             </button>
             <button
               type="submit"
-              className="btn-primary"
-              disabled={selectedCategories.length === 0 && !feedbackText}
+              className="btn-modal-primary"
+              disabled={selectedCategories.length === 0 && !feedbackText.trim()}
             >
               Save Rejection Record
             </button>

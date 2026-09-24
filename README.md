@@ -44,9 +44,9 @@ Instead of building an opaque "AI black-box" to predict love, we built the **Pre
 
 ## Prototype Screenshots
 
-| Application Overview | AI Rejection Classifier | Pilot KPI Dashboard |
-| :---: | :---: | :---: |
-| ![App Overview](./public/screenshots/app_overview.png) | ![Rejection Modal](./public/screenshots/rejection_modal.png) | ![KPI Dashboard](./public/screenshots/kpi_dashboard.png) |
+| Application Overview | Slide-Over "Why This Profile?" | AI Rejection Classifier | Pilot KPI Dashboard |
+| :---: | :---: | :---: | :---: |
+| ![App Overview](./public/screenshots/app_overview.png) | ![Why Drawer](./public/screenshots/why_drawer.png) | ![Rejection Modal](./public/screenshots/rejection_modal.png) | ![KPI Dashboard](./public/screenshots/kpi_dashboard.png) |
 
 ---
 

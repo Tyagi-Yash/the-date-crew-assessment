@@ -1,5 +1,5 @@
 import React from 'react';
-import { Filter, CheckCircle2, XCircle, ShieldCheck, TrendingUp } from 'lucide-react';
+import { Filter, CheckCircle2, ShieldAlert, ShieldCheck, Award } from 'lucide-react';
 
 interface FunnelMetricsBarProps {
   totalScreened: number;
@@ -17,56 +17,66 @@ export const FunnelMetricsBar: React.FC<FunnelMetricsBarProps> = ({
   topRecommendationsCount,
 }) => {
   return (
-    <div className="funnel-summary-card">
-      <div className="funnel-metric-item">
-        <div className="funnel-metric-label">
-          <Filter size={14} /> Candidates Screened
+    <section className="screening-summary-bar" aria-label="Screening Summary Funnel">
+      {/* 1. TOTAL SCREENED */}
+      <div className="metric-strip-card">
+        <div className="metric-strip-icon-box neutral">
+          <Filter size={16} />
         </div>
-        <div className="funnel-metric-value">
-          {totalScreened}
+        <div className="metric-strip-body">
+          <div className="metric-strip-num">{totalScreened}</div>
+          <div className="metric-strip-label">Pool Evaluated</div>
+          <div className="metric-strip-sub">Total candidates scanned</div>
         </div>
-        <div className="funnel-metric-subtext">Total pool evaluated</div>
       </div>
 
-      <div className="funnel-metric-item">
-        <div className="funnel-metric-label">
-          <CheckCircle2 size={14} className="metric-highlight-green" /> Eligible Candidates
+      {/* 2. ELIGIBLE */}
+      <div className="metric-strip-card">
+        <div className="metric-strip-icon-box success">
+          <CheckCircle2 size={16} />
         </div>
-        <div className="funnel-metric-value metric-highlight-green">
-          {eligibleCount}
+        <div className="metric-strip-body">
+          <div className="metric-strip-num success">{eligibleCount}</div>
+          <div className="metric-strip-label">Eligible Matches</div>
+          <div className="metric-strip-sub">Passed 100% deal-breakers</div>
         </div>
-        <div className="funnel-metric-subtext">Passed 100% of deal breakers</div>
       </div>
 
-      <div className="funnel-metric-item">
-        <div className="funnel-metric-label">
-          <XCircle size={14} className="metric-highlight-rose" /> Excluded by Constraints
+      {/* 3. EXCLUDED */}
+      <div className="metric-strip-card">
+        <div className="metric-strip-icon-box danger">
+          <ShieldAlert size={16} />
         </div>
-        <div className="funnel-metric-value metric-highlight-rose">
-          {excludedCount}
+        <div className="metric-strip-body">
+          <div className="metric-strip-num danger">{excludedCount}</div>
+          <div className="metric-strip-label">Deal-Breakers Blocked</div>
+          <div className="metric-strip-sub">Excluded from client view</div>
         </div>
-        <div className="funnel-metric-subtext">Failed smoking, age, or city rules</div>
       </div>
 
-      <div className="funnel-metric-item">
-        <div className="funnel-metric-label">
-          <ShieldCheck size={14} className="metric-highlight-green" /> Avoidable Mismatches Saved
+      {/* 4. AVOIDABLE SAVED */}
+      <div className="metric-strip-card highlight-card">
+        <div className="metric-strip-icon-box highlight">
+          <ShieldCheck size={16} />
         </div>
-        <div className="funnel-metric-value metric-highlight-green">
-          {avoidableMismatchesAvoided}
+        <div className="metric-strip-body">
+          <div className="metric-strip-num highlight">{avoidableMismatchesAvoided}</div>
+          <div className="metric-strip-label">Avoidable Drops Saved</div>
+          <div className="metric-strip-sub">Fixes 35% known preference leak</div>
         </div>
-        <div className="funnel-metric-subtext">Prevented ~35% failure rate</div>
       </div>
 
-      <div className="funnel-metric-item">
-        <div className="funnel-metric-label">
-          <TrendingUp size={14} className="metric-highlight-amber" /> Top Recommendations
+      {/* 5. TOP RECOMMENDATIONS */}
+      <div className="metric-strip-card">
+        <div className="metric-strip-icon-box primary">
+          <Award size={16} />
         </div>
-        <div className="funnel-metric-value metric-highlight-amber">
-          {topRecommendationsCount}
+        <div className="metric-strip-body">
+          <div className="metric-strip-num primary">{topRecommendationsCount}</div>
+          <div className="metric-strip-label">High Alignment</div>
+          <div className="metric-strip-sub">Recommended (80+ score)</div>
         </div>
-        <div className="funnel-metric-subtext">High compatibility (80+)</div>
       </div>
-    </div>
+    </section>
   );
 };

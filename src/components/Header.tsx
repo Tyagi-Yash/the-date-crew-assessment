@@ -1,67 +1,50 @@
 import React from 'react';
-import { Client } from '../types';
-import { Sparkles, BarChart3, Users } from 'lucide-react';
+import { BarChart3, Calendar, Bell, ShieldCheck } from 'lucide-react';
 
 interface HeaderProps {
-  clients: Client[];
-  selectedClientId: string;
-  onSelectClient: (id: string) => void;
   onOpenMetrics: () => void;
+  activeClientName?: string;
 }
 
-export const Header: React.FC<HeaderProps> = ({
-  clients,
-  selectedClientId,
-  onSelectClient,
-  onOpenMetrics,
-}) => {
-  return (
-    <header>
-      <div className="top-nav">
-        <div className="brand-wrapper">
-          <div className="brand-logo-icon">💍</div>
-          <div className="brand-title-area">
-            <h1>The Date Crew</h1>
-            <div className="brand-subtitle">
-              <span>Preference-Aware Matchmaking Assistant</span>
-              <span className="badge-tag">DECISION SUPPORT TOOL</span>
-            </div>
-          </div>
-        </div>
+export const Header: React.FC<HeaderProps> = ({ onOpenMetrics, activeClientName }) => {
+  // Current readable date format
+  const currentDate = new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    weekday: 'short',
+  }).format(new Date());
 
-        <div className="nav-actions">
-          <button className="btn-secondary" onClick={onOpenMetrics}>
-            <BarChart3 size={16} />
-            <span>Funnel & Pilot KPIs</span>
-          </button>
+  return (
+    <header className="workspace-header">
+      <div className="header-left">
+        <div className="header-titles">
+          <div className="header-eyebrow">
+            <span className="eyebrow-chip">Decision Support Copilot</span>
+            <span className="eyebrow-divider">•</span>
+            <span className="eyebrow-context">Evaluating for: <strong>{activeClientName}</strong></span>
+          </div>
+          <h1 className="header-heading">Matchmaking Assistant</h1>
+          <p className="header-subtitle">
+            Turn client preferences into explainable recommendations with deterministic constraint screening.
+          </p>
         </div>
       </div>
 
-      <div className="client-selector-bar">
-        <div className="client-selector-label">
-          <Users size={15} />
-          <span>Active Client:</span>
+      <div className="header-right">
+        <div className="header-meta-pill">
+          <Calendar size={14} className="meta-icon" />
+          <span>{currentDate}</span>
         </div>
-        <div className="client-pills">
-          {clients.map((client) => {
-            const isActive = client.id === selectedClientId;
-            return (
-              <button
-                key={client.id}
-                className={`client-pill-btn ${isActive ? 'active' : ''}`}
-                onClick={() => onSelectClient(client.id)}
-              >
-                <img
-                  src={client.avatar}
-                  alt={client.name}
-                  className="client-pill-avatar"
-                />
-                <span>{client.name}</span>
-                <span style={{ fontSize: '0.75rem', opacity: 0.85 }}>({client.city})</span>
-              </button>
-            );
-          })}
-        </div>
+
+        <button
+          className="header-action-btn"
+          onClick={onOpenMetrics}
+          title="Open Funnel Conversion & Pilot Targets"
+        >
+          <BarChart3 size={15} />
+          <span>Funnel & Pilot KPIs</span>
+          <span className="action-pill-kpi">35% Baseline</span>
+        </button>
       </div>
     </header>
   );
