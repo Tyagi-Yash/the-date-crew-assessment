@@ -112,12 +112,6 @@ export const App: React.FC = () => {
         activeNav={activeNav}
         onSelectNav={(nav) => setActiveNav(nav)}
         onOpenMetrics={() => setIsMetricsOpen(true)}
-        matchmakerName={activeClient.assignedMatchmaker.split('(')[0].trim()}
-        matchmakerAcceptance={
-          activeClient.assignedMatchmaker.includes('44%')
-            ? '44% Acceptance (Benchmark)'
-            : '21% Acceptance'
-        }
       />
 
       {/* MAIN VIEWPORT */}

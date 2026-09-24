@@ -31,7 +31,6 @@ export interface Client {
   bio: string;
   dealBreakers: DealBreakers;
   softPreferences: SoftPreferences;
-  assignedMatchmaker: string;
 }
 
 export interface Candidate {

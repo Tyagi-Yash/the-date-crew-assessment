@@ -11,7 +11,6 @@ export const mockClients: Client[] = [
     education: 'MBA, IIM Bangalore',
     avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&h=200&q=80',
     bio: 'Looking for a thoughtful, driven partner who values work-life balance, loves weekend hiking, and is intentional about building a family together.',
-    assignedMatchmaker: 'Matchmaker A (Acceptance: 44%)',
     dealBreakers: {
       smokingAllowed: ['never'],
       drinkingAllowed: ['never', 'socially'],
@@ -38,7 +37,6 @@ export const mockClients: Client[] = [
     education: 'MS General Surgery, KEM Mumbai',
     avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&h=200&q=80',
     bio: 'Passionate about medicine, weekend classical concerts, and indie cafes. Seeking an emotionally intelligent partner who respects demanding professions and wants kids.',
-    assignedMatchmaker: 'Matchmaker B (Acceptance: 21%)',
     dealBreakers: {
       smokingAllowed: ['never', 'socially'],
       drinkingAllowed: ['never', 'socially'],
@@ -65,7 +63,6 @@ export const mockClients: Client[] = [
     education: 'M.Arch, CEPT University',
     avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&h=200&q=80',
     bio: 'Sustainable architecture enthusiast, amateur ceramicist, and vinyl collector. Deeply rooted in Delhi NCR, looking for someone culturally curious and grounded.',
-    assignedMatchmaker: 'Matchmaker B (Acceptance: 21%)',
     dealBreakers: {
       smokingAllowed: ['never'],
       drinkingAllowed: ['never', 'socially'],

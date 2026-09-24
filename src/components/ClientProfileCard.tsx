@@ -98,8 +98,8 @@ export const ClientProfileCard: React.FC<ClientProfileCardProps> = ({
             <span className="tile-label">Soft Signals</span>
           </div>
           <div className="scannable-tile tile-neutral">
-            <span className="tile-value">{client.assignedMatchmaker.includes('44%') ? '44%' : '21%'}</span>
-            <span className="tile-label">{client.assignedMatchmaker.split(' ')[0]} {client.assignedMatchmaker.split(' ')[1]}</span>
+            <span className="tile-value">100%</span>
+            <span className="tile-label">Intake Done</span>
           </div>
         </div>
 

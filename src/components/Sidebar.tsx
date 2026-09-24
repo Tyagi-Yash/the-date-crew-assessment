@@ -14,16 +14,12 @@ interface SidebarProps {
   activeNav: string;
   onSelectNav: (nav: string) => void;
   onOpenMetrics: () => void;
-  matchmakerName?: string;
-  matchmakerAcceptance?: string;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
   activeNav,
   onSelectNav,
   onOpenMetrics,
-  matchmakerName = 'Pooja Verma',
-  matchmakerAcceptance = '44% Acceptance',
 }) => {
   const navItems = [
     { id: 'overview', label: 'Overview', icon: LayoutDashboard },
@@ -96,9 +92,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <span className="user-online-pip"></span>
         </div>
         <div className="user-info">
-          <span className="user-name">{matchmakerName}</span>
+          <span className="user-name">Pooja Verma</span>
           <span className="user-role">Matchmaker Lead</span>
-          <span className="user-kpi">{matchmakerAcceptance}</span>
+          <span className="user-kpi">Active Session</span>
         </div>
       </div>
     </aside>
