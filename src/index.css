@@ -3756,3 +3756,660 @@ input, textarea, select {
   background: #962230 !important;
 }
 
+/* ====================================================
+   MOBILE & TABLET RESPONSIVE DESIGN SYSTEM
+   ==================================================== */
+
+/* --- TABLETS & SMALL DESKTOPS (<= 1080px) --- */
+@media (max-width: 1080px) {
+  .curation-workbench-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .client-context-panel {
+    position: static;
+  }
+
+  .screening-summary-bar {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* --- MOBILE LANDSCAPE & TABLET PORTRAIT (<= 860px) --- */
+@media (max-width: 860px) {
+  .app-shell {
+    flex-direction: column;
+  }
+
+  .app-sidebar {
+    width: 100%;
+    height: auto;
+    position: static;
+    padding: 0.75rem 1rem 0.5rem 1rem;
+    border-right: none;
+    border-bottom: 1px solid var(--color-sidebar-border);
+  }
+
+  .sidebar-brand {
+    padding: 0 0 0.5rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .sidebar-nav {
+    padding-top: 0.45rem;
+  }
+
+  .nav-section-title {
+    display: none;
+  }
+
+  .nav-list {
+    flex-direction: row;
+    gap: 0.45rem;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .nav-list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .nav-item-btn {
+    white-space: nowrap;
+    width: auto;
+    flex-shrink: 0;
+    padding: 0.45rem 0.8rem;
+    font-size: 0.8rem;
+    border-radius: var(--radius-full);
+  }
+
+  .nav-item-btn.active::before {
+    left: 20%;
+    right: 20%;
+    bottom: 0;
+    top: auto;
+    width: auto;
+    height: 3px;
+    border-radius: 3px 3px 0 0;
+  }
+
+  .sidebar-status-box,
+  .sidebar-user-footer {
+    display: none;
+  }
+
+  .workspace-header {
+    padding: 0.85rem 1.25rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.65rem;
+    position: static;
+  }
+
+  .header-left {
+    width: 100%;
+  }
+
+  .header-heading {
+    font-size: 1.25rem;
+  }
+
+  .header-subtitle {
+    font-size: 0.78rem;
+  }
+
+  .header-right {
+    width: 100%;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .workspace-main {
+    padding: 1.25rem 1.25rem 2.5rem;
+    gap: 1.15rem;
+  }
+
+  .design-section-grid,
+  .prototype-points-grid,
+  .metrics-summary-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --- MOBILE PHONES (<= 640px) --- */
+@media (max-width: 640px) {
+  .workspace-header {
+    padding: 0.75rem 0.85rem;
+  }
+
+  .header-heading {
+    font-size: 1.15rem;
+  }
+
+  .header-subtitle {
+    display: none;
+  }
+
+  .header-right {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.4rem;
+  }
+
+  .header-meta-pill {
+    justify-content: center;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.72rem;
+  }
+
+  .header-action-btn {
+    justify-content: center;
+    padding: 0.4rem 0.75rem;
+    font-size: 0.76rem;
+  }
+
+  .workspace-main {
+    padding: 0.85rem 0.75rem 2rem;
+    gap: 1rem;
+  }
+
+  /* Funnel Metrics Bar on Phones */
+  .screening-summary-bar {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.45rem;
+  }
+
+  .metric-strip-card {
+    padding: 0.65rem 0.75rem;
+    gap: 0.55rem;
+  }
+
+  .metric-strip-icon-box {
+    width: 28px;
+    height: 28px;
+  }
+
+  .metric-strip-num {
+    font-size: 1.2rem;
+  }
+
+  .metric-strip-label {
+    font-size: 0.7rem;
+  }
+
+  .metric-strip-sub {
+    font-size: 0.62rem;
+  }
+
+  /* Client Executive Card */
+  .client-executive-card {
+    padding: 0.9rem;
+    gap: 0.75rem;
+  }
+
+  .executive-card-header {
+    gap: 0.75rem;
+  }
+
+  .executive-avatar-wrap {
+    width: 46px;
+    height: 46px;
+  }
+
+  .executive-name {
+    font-size: 1.05rem;
+  }
+
+  .executive-sub,
+  .executive-role {
+    font-size: 0.72rem;
+  }
+
+  .scannable-tiles-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.4rem;
+  }
+
+  .tile-value {
+    font-size: 0.95rem;
+  }
+
+  .client-bio-quote {
+    font-size: 0.74rem;
+    padding: 0.65rem 0.8rem;
+  }
+
+  /* Client Dropdown Trigger on Mobile */
+  .client-dropdown-trigger {
+    padding: 0.5rem 0.65rem;
+  }
+
+  .trigger-avatar-wrap {
+    width: 32px;
+    height: 32px;
+  }
+
+  .trigger-client-name {
+    font-size: 0.82rem;
+  }
+
+  .trigger-client-age {
+    font-size: 0.68rem;
+  }
+
+  .trigger-profession {
+    max-width: 85px;
+    font-size: 0.68rem;
+  }
+
+  .trigger-city {
+    font-size: 0.68rem;
+  }
+
+  .dropdown-client-item {
+    padding: 0.65rem 0.7rem;
+    gap: 0.6rem;
+  }
+
+  .dropdown-item-avatar-wrap {
+    width: 38px;
+    height: 38px;
+  }
+
+  .item-name {
+    font-size: 0.8rem;
+  }
+
+  .item-criteria-chips {
+    gap: 0.25rem;
+  }
+
+  .crit-chip {
+    font-size: 0.62rem;
+    padding: 1px 5px;
+  }
+
+  /* Candidate Stream Header & Tabs */
+  .stream-action-header {
+    padding: 0.75rem 0.85rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.65rem;
+  }
+
+  .stream-heading {
+    font-size: 0.92rem;
+  }
+
+  .stream-helper {
+    font-size: 0.7rem;
+  }
+
+  .stream-filter-tabs {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 2px;
+  }
+
+  .stream-filter-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filter-tab-pill {
+    white-space: nowrap;
+    flex-shrink: 0;
+    font-size: 0.72rem;
+    padding: 0.35rem 0.65rem;
+  }
+
+  /* Candidate Premium Card */
+  .candidate-premium-card {
+    padding: 0.9rem;
+    gap: 0.85rem;
+  }
+
+  .card-top-layout {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .card-primary-info {
+    gap: 0.75rem;
+    width: 100%;
+  }
+
+  .card-avatar-wrap {
+    width: 52px;
+    height: 52px;
+  }
+
+  .candidate-name {
+    font-size: 1rem;
+  }
+
+  .candidate-meta-line {
+    font-size: 0.74rem;
+  }
+
+  .candidate-edu-line {
+    font-size: 0.7rem;
+  }
+
+  .card-score-widget {
+    align-items: stretch;
+    width: 100%;
+    border-top: 1px dashed var(--color-border-subtle);
+    padding-top: 0.65rem;
+    margin-top: 0.2rem;
+  }
+
+  .score-container,
+  .score-excluded-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .mini-audit-checklist {
+    gap: 0.25rem;
+    flex-wrap: wrap;
+  }
+
+  .audit-pill {
+    font-size: 0.65rem;
+    padding: 1px 5px;
+  }
+
+  .card-attributes-strip {
+    padding: 0.5rem 0.65rem;
+    gap: 0.4rem;
+  }
+
+  .attr-pill {
+    font-size: 0.7rem;
+  }
+
+  .dealbreaker-alert-card {
+    padding: 0.6rem 0.75rem;
+    font-size: 0.74rem;
+  }
+
+  /* Action Buttons Grid on Phones */
+  .card-actions-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.6rem;
+  }
+
+  .actions-left-status {
+    width: 100%;
+  }
+
+  .tag-ready-status,
+  .tag-shared-status,
+  .tag-rejected-feedback,
+  .tag-override-status {
+    font-size: 0.7rem;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .actions-right-buttons {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.4rem;
+  }
+
+  .btn-action-ghost,
+  .btn-action-secondary,
+  .btn-action-primary,
+  .btn-action-override {
+    width: 100%;
+    justify-content: center;
+    padding: 0.45rem 0.4rem;
+    font-size: 0.72rem;
+    text-align: center;
+  }
+
+  /* Slide-over Drawer Fullscreen on Phones */
+  .drawer-panel {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .drawer-header {
+    padding: 0.85rem 1rem;
+  }
+
+  .drawer-title {
+    font-size: 1.1rem;
+  }
+
+  .drawer-body {
+    padding: 0.9rem 1rem;
+    gap: 1rem;
+  }
+
+  .drawer-score-hero {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+
+  .score-hero-breakdown {
+    align-items: center;
+  }
+
+  .drawer-footer {
+    padding: 0.75rem 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .btn-drawer-secondary,
+  .btn-drawer-primary,
+  .drawer-shared-badge {
+    flex: 1;
+    min-width: 120px;
+    justify-content: center;
+  }
+
+  /* Modals on Phones */
+  .modal-overlay {
+    padding: 0.5rem;
+  }
+
+  .modal-dialog {
+    max-height: 94vh;
+    width: 100%;
+    border-radius: var(--radius-lg);
+  }
+
+  .modal-header {
+    padding: 0.85rem 1rem;
+  }
+
+  .modal-title {
+    font-size: 1.05rem;
+  }
+
+  .modal-subtitle {
+    font-size: 0.72rem;
+  }
+
+  .modal-body {
+    padding: 0.85rem 1rem;
+    gap: 0.85rem;
+  }
+
+  .modal-footer {
+    padding: 0.75rem 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .btn-modal-secondary,
+  .btn-modal-primary {
+    flex: 1;
+    min-width: 110px;
+    justify-content: center;
+  }
+
+  .email-meta-fields {
+    padding: 0.65rem 0.85rem;
+  }
+
+  .email-field-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+  }
+
+  .email-field-label {
+    width: auto;
+  }
+
+  .email-field-value {
+    font-size: 0.74rem;
+    word-break: break-all;
+  }
+
+  .email-body-textarea {
+    font-size: 0.78rem;
+    padding: 0.7rem;
+  }
+
+  .quick-override-chips {
+    gap: 0.3rem;
+  }
+
+  .override-chip-btn {
+    font-size: 0.66rem;
+    padding: 1px 6px;
+  }
+
+  /* Assessment Answers View on Phones */
+  .answers-view-container {
+    padding: 0.75rem 0.65rem 2rem;
+  }
+
+  .answers-hero {
+    padding: 1rem 0.9rem;
+    margin-bottom: 1.15rem;
+  }
+
+  .answers-hero-title {
+    font-size: 1.2rem;
+  }
+
+  .answers-hero-sub {
+    font-size: 0.78rem;
+    margin-bottom: 1rem;
+  }
+
+  .answers-nav-tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-top: 0.85rem;
+  }
+
+  .answers-nav-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .ans-tab {
+    white-space: nowrap;
+    flex-shrink: 0;
+    font-size: 0.72rem;
+    padding: 0.35rem 0.7rem;
+  }
+
+  .answer-card-header {
+    padding: 0.85rem 1rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+  }
+
+  .ans-title {
+    font-size: 0.98rem;
+  }
+
+  .ans-wordcount-badge {
+    font-size: 0.68rem;
+  }
+
+  .answer-card-body {
+    padding: 0.95rem;
+    gap: 1.15rem;
+    font-size: 0.82rem;
+  }
+
+  .question-item {
+    padding: 0.75rem 0.85rem;
+  }
+
+  .q-why {
+    font-size: 0.78rem;
+    padding: 0.5rem 0.65rem;
+  }
+
+  .triage-item {
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 0.75rem;
+  }
+
+  .ai-disclosure-box {
+    padding: 0.85rem;
+  }
+
+  .ai-disclosure-list {
+    padding-left: 1.1rem;
+    gap: 0.65rem;
+    font-size: 0.82rem;
+  }
+
+  /* Metrics Dashboard on Phones */
+  .kpi-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+  }
+
+  .funnel-table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .funnel-table {
+    min-width: 500px;
+  }
+
+  /* Toasts on Phones */
+  .toast-container {
+    left: 0.75rem;
+    right: 0.75rem;
+    bottom: 0.85rem;
+  }
+
+  .toast-item {
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+    font-size: 0.75rem;
+    padding: 0.65rem 0.85rem;
+  }
+}
+
+
