@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Client } from '../types';
 import {
   ShieldAlert,
@@ -9,6 +9,10 @@ import {
   GraduationCap,
   Users,
   CheckCircle2,
+  ChevronDown,
+  Check,
+  Cigarette,
+  Baby,
 } from 'lucide-react';
 
 interface ClientProfileCardProps {
@@ -24,10 +28,29 @@ export const ClientProfileCard: React.FC<ClientProfileCardProps> = ({
   selectedClientId,
   onSelectClient,
 }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleSelect = (clientId: string) => {
+    onSelectClient(clientId);
+    setIsOpen(false);
+  };
+
   return (
     <aside className="client-context-panel">
-      {/* CLIENT SWITCHER BAR */}
-      <div className="client-switcher-card">
+      {/* CLIENT SELECTION DROPDOWN */}
+      <div className="client-switcher-card" ref={dropdownRef}>
         <div className="switcher-header">
           <span className="switcher-label">
             <Users size={13} />
@@ -35,25 +58,110 @@ export const ClientProfileCard: React.FC<ClientProfileCardProps> = ({
           </span>
           <span className="switcher-count">{allClients.length} Rostered</span>
         </div>
-        <div className="switcher-pills">
-          {allClients.map((c) => {
-            const isActive = c.id === selectedClientId;
-            return (
-              <button
-                key={c.id}
-                className={`switcher-pill ${isActive ? 'active' : ''}`}
-                onClick={() => onSelectClient(c.id)}
-              >
-                <img src={c.avatar} alt={c.name} className="pill-avatar" />
-                <div className="pill-text">
-                  <span className="pill-name">{c.name.split(' ')[0]}</span>
-                  <span className="pill-sub">{c.city}</span>
-                </div>
-                {isActive && <span className="active-dot" />}
-              </button>
-            );
-          })}
-        </div>
+
+        {/* DROPDOWN TRIGGER BUTTON */}
+        <button
+          type="button"
+          className={`client-dropdown-trigger ${isOpen ? 'is-open' : ''}`}
+          onClick={() => setIsOpen((prev) => !prev)}
+          aria-expanded={isOpen}
+          aria-haspopup="listbox"
+        >
+          <div className="trigger-client-info">
+            <div className="trigger-avatar-wrap">
+              <img src={client.avatar} alt={client.name} className="trigger-avatar" />
+              <span className="trigger-active-dot" />
+            </div>
+            <div className="trigger-text-block">
+              <div className="trigger-name-row">
+                <span className="trigger-client-name">{client.name}</span>
+                <span className="trigger-client-age">{client.age} yrs</span>
+              </div>
+              <div className="trigger-sub-row">
+                <span className="trigger-profession">{client.profession}</span>
+                <span className="trigger-dot">•</span>
+                <span className="trigger-city">
+                  <MapPin size={11} className="trigger-pin-icon" />
+                  {client.city}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div className="trigger-right-action">
+            <span className="trigger-pill-badge">Active</span>
+            <ChevronDown size={16} className={`trigger-chevron ${isOpen ? 'rotated' : ''}`} />
+          </div>
+        </button>
+
+        {/* EXPANDABLE DROPDOWN MENU */}
+        {isOpen && (
+          <div className="client-dropdown-menu" role="listbox">
+            <div className="dropdown-menu-header">
+              <span className="menu-header-title">Switch Active Client</span>
+              <span className="menu-header-sub">Updates candidate compatibility score ranking</span>
+            </div>
+
+            <div className="dropdown-client-list">
+              {allClients.map((c) => {
+                const isSelected = c.id === selectedClientId;
+                return (
+                  <div
+                    key={c.id}
+                    className={`dropdown-client-item ${isSelected ? 'is-selected' : ''}`}
+                    onClick={() => handleSelect(c.id)}
+                    role="option"
+                    aria-selected={isSelected}
+                  >
+                    {/* AVATAR */}
+                    <div className="dropdown-item-avatar-wrap">
+                      <img src={c.avatar} alt={c.name} className="dropdown-item-avatar" />
+                      {isSelected && <span className="item-selected-pip"><Check size={10} /></span>}
+                    </div>
+
+                    {/* CLIENT DETAILS */}
+                    <div className="dropdown-item-details">
+                      <div className="item-top-row">
+                        <strong className="item-name">{c.name}</strong>
+                        <span className="item-age-badge">{c.age} yrs</span>
+                        {isSelected && <span className="item-active-tag">Active</span>}
+                      </div>
+
+                      <div className="item-career-row">
+                        <span className="item-profession">
+                          <Briefcase size={11} />
+                          {c.profession}
+                        </span>
+                        <span className="item-meta-dot">•</span>
+                        <span className="item-city">
+                          <MapPin size={11} />
+                          {c.city}
+                        </span>
+                      </div>
+
+                      <div className="item-edu-row">
+                        <GraduationCap size={11} />
+                        <span>{c.education}</span>
+                      </div>
+
+                      {/* QUICK FILTER CRITERIA SUMMARY */}
+                      <div className="item-criteria-chips">
+                        <span className="crit-chip chip-smoking">
+                          🚭 {c.dealBreakers.smokingAllowed.includes('never') && c.dealBreakers.smokingAllowed.length === 1 ? 'Non-smoker only' : 'Social smoking ok'}
+                        </span>
+                        <span className="crit-chip chip-age">
+                          📅 {c.dealBreakers.minAge}–{c.dealBreakers.maxAge} yrs
+                        </span>
+                        <span className="crit-chip chip-kids">
+                          👶 {c.dealBreakers.childrenPreferenceAllowed.includes('wants') ? 'Wants kids' : 'Open to kids'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* ACTIVE CLIENT EXECUTIVE CARD */}

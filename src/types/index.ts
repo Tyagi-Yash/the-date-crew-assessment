@@ -91,7 +91,21 @@ export interface RejectionRecord {
   timestamp: string;
 }
 
+export interface EmailDispatchRecord {
+  id: string;
+  candidateId: string;
+  candidateName: string;
+  clientId: string;
+  clientName: string;
+  subject: string;
+  body: string;
+  isOverride: boolean;
+  overrideJustification?: string;
+  timestamp: string;
+}
+
 export interface MatchmakerInteractionState {
   sharedProfileIds: string[];
   rejections: Record<string, RejectionRecord>;
+  emailDispatches: Record<string, EmailDispatchRecord>;
 }

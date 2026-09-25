@@ -13,6 +13,7 @@ import {
   MapPin,
   Briefcase,
   HelpCircle,
+  Mail,
 } from 'lucide-react';
 
 interface WhyProfileDrawerProps {
@@ -20,7 +21,7 @@ interface WhyProfileDrawerProps {
   compatibility: CompatibilityResult | null;
   isOpen: boolean;
   onClose: () => void;
-  onShare: (candidateId: string) => void;
+  onOpenEmailComposer: (candidate: Candidate, compatibility: CompatibilityResult, isOverride: boolean) => void;
   isShared: boolean;
 }
 
@@ -29,7 +30,7 @@ export const WhyProfileDrawer: React.FC<WhyProfileDrawerProps> = ({
   compatibility,
   isOpen,
   onClose,
-  onShare,
+  onOpenEmailComposer,
   isShared,
 }) => {
   if (!isOpen || !candidate || !compatibility) return null;
@@ -233,11 +234,24 @@ export const WhyProfileDrawer: React.FC<WhyProfileDrawerProps> = ({
             <button
               className="btn-drawer-primary"
               onClick={() => {
-                onShare(candidate.id);
+                onOpenEmailComposer(candidate, compatibility, false);
+                onClose();
               }}
             >
-              <Share2 size={15} />
-              <span>Share Profile via Email</span>
+              <Mail size={15} />
+              <span>Draft Email & Share</span>
+            </button>
+          )}
+          {isExcluded && !isShared && (
+            <button
+              className="btn-action-override"
+              onClick={() => {
+                onOpenEmailComposer(candidate, compatibility, true);
+                onClose();
+              }}
+            >
+              <AlertTriangle size={15} />
+              <span>Send with Override</span>
             </button>
           )}
           {isShared && (

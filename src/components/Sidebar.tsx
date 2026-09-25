@@ -1,13 +1,8 @@
-import React from 'react';
 import {
-  LayoutDashboard,
   HeartHandshake,
-  Users,
-  UserCheck,
-  MessageSquareQuote,
   BarChart3,
-  ShieldCheck,
   Sparkles,
+  FileText,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -22,11 +17,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onOpenMetrics,
 }) => {
   const navItems = [
-    { id: 'overview', label: 'Overview', icon: LayoutDashboard },
     { id: 'matchmaking', label: 'Matchmaking', icon: HeartHandshake, badge: 'Live' },
-    { id: 'clients', label: 'Clients', icon: Users },
-    { id: 'candidates', label: 'Candidates', icon: UserCheck },
-    { id: 'feedback', label: 'Feedback', icon: MessageSquareQuote },
+    { id: 'answers', label: 'Assessment Answers', icon: FileText, badge: 'Doc' },
     { id: 'insights', label: 'Funnel Insights', icon: BarChart3, action: onOpenMetrics },
   ];
 
@@ -86,7 +78,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div className="user-avatar-wrap">
           <img
             src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&h=120&q=80"
-            alt={matchmakerName}
+            alt="Matchmaker"
             className="user-avatar"
           />
           <span className="user-online-pip"></span>

@@ -1,11 +1,3 @@
-# The Date Crew — Product & Tech Generalist Assessment
-
-**Candidate Assessment Submission**  
-**Role:** Product & Tech Generalist / Product Engineer  
-**Contact / Submission:** tech@thedatecrew.com  
-
----
-
 ## Part 1 — Diagnose the Problem
 
 ### 1. Three questions I would investigate
@@ -106,12 +98,6 @@ A high-fidelity, interactive **Preference-Aware Matchmaking Assistant** built wi
 ### Where AI is Used vs. What is Mocked
 - **Where AI is Used:** AI is applied strictly to unstructured text parsing in `src/engine/aiFeedbackParser.ts` to convert messy qualitative notes into structured taxonomy and audit against client preferences.
 - **What is Mocked:** Candidate profiles and client rosters are synthetic realistic data. The NLP parser runs a deterministic semantic heuristic simulating an LLM structured output schema to ensure zero runtime dependencies or fragile API key failures during evaluation.
-
-### Prototype Screenshots
-- **Application Overview:** `public/screenshots/app_overview.png`
-- **Score Breakdown & Explainability:** `public/screenshots/app_overview.png`
-- **AI Rejection Modal:** `public/screenshots/rejection_modal.png`
-- **Funnel & Pilot KPI Dashboard:** `public/screenshots/kpi_dashboard.png`
 
 ---
 

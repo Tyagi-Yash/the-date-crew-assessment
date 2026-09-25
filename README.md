@@ -1,7 +1,7 @@
 # The Date Crew — Preference-Aware Matchmaking Assistant
 
 > **Product & Tech Generalist Assessment Deliverable**  
-> Built for **The Date Crew** • Target Email: `tech@thedatecrew.com`
+> Built for **The Date Crew**
 
 ---
 
@@ -39,14 +39,6 @@ Instead of building an opaque "AI black-box" to predict love, we built the **Pre
    Extracts standardized taxonomies and confidence scores from qualitative free-text feedback (e.g., *"I liked her but she smokes socially"* → `Smoking Habit Conflict`, 96% confidence). Automatically alerts matchmakers when an avoidable preference conflict slipped through.
 5. **Pilot KPI & Funnel Metrics Dashboard**  
    Visualizes the full 30-day conversion funnel and benchmarks proposed pilot targets against company baselines.
-
----
-
-## Prototype Screenshots
-
-| Application Overview | Slide-Over "Why This Profile?" | AI Rejection Classifier | Pilot KPI Dashboard |
-| :---: | :---: | :---: | :---: |
-| ![App Overview](./public/screenshots/app_overview.png) | ![Why Drawer](./public/screenshots/why_drawer.png) | ![Rejection Modal](./public/screenshots/rejection_modal.png) | ![KPI Dashboard](./public/screenshots/kpi_dashboard.png) |
 
 ---
 
@@ -161,16 +153,3 @@ Automated test suite located in `tests/scoring.test.ts` covers:
 2. **Automated Two-Way Scheduling Integration:** Address Stage 4 drop-off (150 chats → 75 meetings fixed) via calendar-syncing integrations (e.g., Cal.com).
 3. **Email Draft Generator:** Generative AI assistant to draft bespoke introduction blurbs highlighting shared compatibility points.
 4. **Revealed Preference Diagnostics:** Alert matchmakers when a client's rejection behavior contradicts their stated onboarding preferences.
-
----
-
-## Submission Checklist
-
-- [x] **Part 1 — Diagnose the Problem** (Completed in `ANSWER.md`, ~318 words)
-- [x] **Part 2 — Design a Solution** (Completed in `ANSWER.md`, ~475 words)
-- [x] **Part 3 — Interactive Prototype** (Working React + TypeScript + Vite app in this repo)
-- [x] **Part 4 — Curveball Analysis** (Completed in `ANSWER.md`, ~194 words)
-- [x] **AI Usage Disclosure** (Completed in `ANSWER.md`, 3 lines)
-- [x] **Evaluator Walkthrough** (Detailed in `DEMO.md`)
-- [x] **Automated Tests** (Passing in `tests/scoring.test.ts`)
-- [x] **Submission Email:** `tech@thedatecrew.com`

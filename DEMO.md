@@ -1,4 +1,4 @@
-# The Date Crew — Evaluator Demo Script (2-Minute Walkthrough)
+# The Date Crew — Demo Script (2-Minute Walkthrough)
 
 Follow this quick step-by-step script to test and experience the **Preference-Aware Matchmaking Assistant** prototype in under two minutes.
 

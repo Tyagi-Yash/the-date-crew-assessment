@@ -14,14 +14,17 @@ import {
   Baby,
   HelpCircle,
   Check,
+  AlertTriangle,
+  Mail,
 } from 'lucide-react';
 
 interface CandidateCardProps {
   candidate: Candidate;
   compatibility: CompatibilityResult;
   isShared: boolean;
+  isOverrideShared?: boolean;
   rejectionRecord?: RejectionRecord;
-  onShare: (candidateId: string) => void;
+  onOpenEmailComposer: (candidate: Candidate, compatibility: CompatibilityResult, isOverride: boolean) => void;
   onOpenReject: (candidate: Candidate) => void;
   onOpenWhyDrawer: (candidate: Candidate, compatibility: CompatibilityResult) => void;
 }
@@ -30,8 +33,9 @@ export const CandidateCard: React.FC<CandidateCardProps> = ({
   candidate,
   compatibility,
   isShared,
+  isOverrideShared,
   rejectionRecord,
-  onShare,
+  onOpenEmailComposer,
   onOpenReject,
   onOpenWhyDrawer,
 }) => {
@@ -204,7 +208,7 @@ export const CandidateCard: React.FC<CandidateCardProps> = ({
             <strong className="alert-strong">Constraint Conflict:</strong>{' '}
             <span className="alert-msg">{compatibility.exclusionReason}</span>
             <div className="alert-helper">
-              ⚠️ Filtered out automatically to prevent avoidable client rejection.
+              ⚠️ Filtered out automatically to prevent avoidable client rejection. Matchmakers may override with mandatory documented justification.
             </div>
           </div>
         </div>
@@ -217,6 +221,11 @@ export const CandidateCard: React.FC<CandidateCardProps> = ({
             <span className="tag-rejected-feedback">
               <ThumbsDown size={13} />
               <span>Rejected: {rejectionRecord.aiInterpretation.reason}</span>
+            </span>
+          ) : isOverrideShared ? (
+            <span className="tag-override-status">
+              <AlertTriangle size={13} />
+              <span>Shared (Matchmaker Override)</span>
             </span>
           ) : isShared ? (
             <span className="tag-shared-status">
@@ -253,25 +262,27 @@ export const CandidateCard: React.FC<CandidateCardProps> = ({
             </button>
           )}
 
-          {/* SHARE PROFILE */}
+          {/* DRAFT EMAIL & SHARE PROFILE (NORMAL) */}
           {!rejectionRecord && !isShared && !isExcluded && (
             <button
               className="btn-action-primary"
-              onClick={() => onShare(candidate.id)}
-              title="Approve and share candidate profile with client"
+              onClick={() => onOpenEmailComposer(candidate, compatibility, false)}
+              title="Generate personalized introduction email and share with client"
             >
-              <Share2 size={13} />
-              <span>Share Profile</span>
+              <Mail size={13} />
+              <span>Draft Email & Share</span>
             </button>
           )}
 
-          {isExcluded && !rejectionRecord && (
+          {/* OVERRIDE & SEND EMAIL (BLOCKED CANDIDATE) */}
+          {isExcluded && !rejectionRecord && !isShared && (
             <button
-              className="btn-action-disabled"
-              disabled
-              title="Cannot share a profile that violates non-negotiable deal breakers"
+              className="btn-action-override"
+              onClick={() => onOpenEmailComposer(candidate, compatibility, true)}
+              title="Send candidate profile to client with documented matchmaker override justification"
             >
-              Blocked by Rule
+              <AlertTriangle size={13} />
+              <span>Send with Override</span>
             </button>
           )}
         </div>

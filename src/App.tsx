@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { mockClients, mockCandidates } from './data/mockData';
-import { Candidate, CompatibilityResult, RejectionRecord } from './types';
+import { Candidate, CompatibilityResult, RejectionRecord, EmailDispatchRecord } from './types';
 import { calculateCompatibility } from './engine/scoringEngine';
 import { Sidebar } from './components/Sidebar';
 import { Header } from './components/Header';
@@ -9,6 +9,8 @@ import { FunnelMetricsBar } from './components/FunnelMetricsBar';
 import { CandidateCard } from './components/CandidateCard';
 import { WhyProfileDrawer } from './components/WhyProfileDrawer';
 import { RejectionModal } from './components/RejectionModal';
+import { EmailComposerModal } from './components/EmailComposerModal';
+import { AssessmentAnswersView } from './components/AssessmentAnswersView';
 import { MetricsDashboard } from './components/MetricsDashboard';
 import { ToastContainer, ToastMessage } from './components/Toast';
 
@@ -17,7 +19,9 @@ export const App: React.FC = () => {
   const [selectedClientId, setSelectedClientId] = useState<string>('client-1');
   const [tabFilter, setTabFilter] = useState<'all' | 'recommended' | 'review' | 'excluded'>('all');
   const [sharedIds, setSharedIds] = useState<string[]>([]);
+  const [overrideCandidateIds, setOverrideCandidateIds] = useState<string[]>([]);
   const [rejections, setRejections] = useState<Record<string, RejectionRecord>>({});
+  const [emailDispatches, setEmailDispatches] = useState<Record<string, EmailDispatchRecord>>({});
   const [isMetricsOpen, setIsMetricsOpen] = useState<boolean>(false);
   const [rejectingCandidate, setRejectingCandidate] = useState<Candidate | null>(null);
 
@@ -25,6 +29,12 @@ export const App: React.FC = () => {
   const [drawerCandidate, setDrawerCandidate] = useState<Candidate | null>(null);
   const [drawerCompatibility, setDrawerCompatibility] = useState<CompatibilityResult | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
+
+  // Email Composer Modal state
+  const [composerCandidate, setComposerCandidate] = useState<Candidate | null>(null);
+  const [composerCompatibility, setComposerCompatibility] = useState<CompatibilityResult | null>(null);
+  const [isComposerOverride, setIsComposerOverride] = useState<boolean>(false);
+  const [isEmailComposerOpen, setIsEmailComposerOpen] = useState<boolean>(false);
 
   // Toast notifications state
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
@@ -34,7 +44,7 @@ export const App: React.FC = () => {
     setToasts((prev) => [...prev, { id, type, message }]);
     setTimeout(() => {
       setToasts((prev) => prev.filter((t) => t.id !== id));
-    }, 4000);
+    }, 4500);
   };
 
   const handleDismissToast = (id: string) => {
@@ -82,11 +92,64 @@ export const App: React.FC = () => {
     });
   }, [candidateEvaluations, tabFilter]);
 
-  const handleShare = (candidateId: string) => {
-    if (!sharedIds.includes(candidateId)) {
-      setSharedIds((prev) => [...prev, candidateId]);
-      const cand = mockCandidates.find((c) => c.id === candidateId);
-      addToast(`Profile for ${cand ? cand.name : 'Candidate'} shared with client via email.`);
+  const handleOpenEmailComposer = (
+    candidate: Candidate,
+    compatibility: CompatibilityResult,
+    isOverride: boolean
+  ) => {
+    setComposerCandidate(candidate);
+    setComposerCompatibility(compatibility);
+    setIsComposerOverride(isOverride);
+    setIsEmailComposerOpen(true);
+  };
+
+  const handleSendEmail = (data: {
+    subject: string;
+    body: string;
+    isOverride: boolean;
+    overrideJustification?: string;
+  }) => {
+    if (!composerCandidate) return;
+
+    const candId = composerCandidate.id;
+    if (!sharedIds.includes(candId)) {
+      setSharedIds((prev) => [...prev, candId]);
+    }
+
+    if (data.isOverride && !overrideCandidateIds.includes(candId)) {
+      setOverrideCandidateIds((prev) => [...prev, candId]);
+    }
+
+    const record: EmailDispatchRecord = {
+      id: `disp-${Date.now()}`,
+      candidateId: candId,
+      candidateName: composerCandidate.name,
+      clientId: activeClient.id,
+      clientName: activeClient.name,
+      subject: data.subject,
+      body: data.body,
+      isOverride: data.isOverride,
+      overrideJustification: data.overrideJustification,
+      timestamp: new Date().toISOString(),
+    };
+
+    setEmailDispatches((prev) => ({
+      ...prev,
+      [candId]: record,
+    }));
+
+    setIsEmailComposerOpen(false);
+
+    if (data.isOverride) {
+      addToast(
+        `Override introduction email sent to ${activeClient.name} for ${composerCandidate.name}. Policy justification logged to audit trail.`,
+        'info'
+      );
+    } else {
+      addToast(
+        `Introduction email sent to ${activeClient.name} for ${composerCandidate.name}.`,
+        'success'
+      );
     }
   };
 
@@ -119,96 +182,103 @@ export const App: React.FC = () => {
         {/* WORKSPACE HEADER */}
         <Header
           onOpenMetrics={() => setIsMetricsOpen(true)}
-          activeClientName={activeClient.name}
+          activeClientName={activeNav === 'answers' ? 'Assessment Submission' : activeClient.name}
         />
 
         {/* WORKSPACE CONTENT AREA */}
-        <main className="workspace-main">
-          {/* SCREENING FUNNEL SUMMARY STRIP */}
-          <FunnelMetricsBar
-            totalScreened={totalScreened}
-            eligibleCount={eligibleCount}
-            excludedCount={excludedCount}
-            avoidableMismatchesAvoided={excludedCount}
-            topRecommendationsCount={topRecommendationsCount}
-          />
-
-          {/* TWO-COLUMN CURATION WORKBENCH */}
-          <div className="curation-workbench-grid">
-            {/* LEFT COLUMN: CLIENT CONTEXT & 3-TIER PREFERENCES */}
-            <ClientProfileCard
-              client={activeClient}
-              allClients={mockClients}
-              selectedClientId={selectedClientId}
-              onSelectClient={(id) => {
-                setSelectedClientId(id);
-                setTabFilter('all');
-                setIsDrawerOpen(false);
-              }}
+        {activeNav === 'answers' ? (
+          <main className="workspace-main">
+            <AssessmentAnswersView />
+          </main>
+        ) : (
+          <main className="workspace-main">
+            {/* SCREENING FUNNEL SUMMARY STRIP */}
+            <FunnelMetricsBar
+              totalScreened={totalScreened}
+              eligibleCount={eligibleCount}
+              excludedCount={excludedCount}
+              avoidableMismatchesAvoided={excludedCount}
+              topRecommendationsCount={topRecommendationsCount}
             />
 
-            {/* RIGHT COLUMN: CANDIDATE CURATION STREAM */}
-            <section className="candidate-stream-column">
-              <div className="stream-action-header">
-                <div className="stream-header-left">
-                  <h3 className="stream-heading">
-                    <span>Curated Candidate Pool</span>
-                    <span className="stream-count-badge">
-                      {filteredCandidates.length} profiles
-                    </span>
-                  </h3>
-                  <p className="stream-helper">
-                    Ranked by transparent compatibility score against <strong>{activeClient.name}</strong>'s preferences.
-                  </p>
+            {/* TWO-COLUMN CURATION WORKBENCH */}
+            <div className="curation-workbench-grid">
+              {/* LEFT COLUMN: CLIENT CONTEXT & 3-TIER PREFERENCES */}
+              <ClientProfileCard
+                client={activeClient}
+                allClients={mockClients}
+                selectedClientId={selectedClientId}
+                onSelectClient={(id) => {
+                  setSelectedClientId(id);
+                  setTabFilter('all');
+                  setIsDrawerOpen(false);
+                }}
+              />
+
+              {/* RIGHT COLUMN: CANDIDATE CURATION STREAM */}
+              <section className="candidate-stream-column">
+                <div className="stream-action-header">
+                  <div className="stream-header-left">
+                    <h3 className="stream-heading">
+                      <span>Curated Candidate Pool</span>
+                      <span className="stream-count-badge">
+                        {filteredCandidates.length} profiles
+                      </span>
+                    </h3>
+                    <p className="stream-helper">
+                      Ranked by transparent compatibility score against <strong>{activeClient.name}</strong>'s preferences.
+                    </p>
+                  </div>
+
+                  {/* FILTER TABS */}
+                  <div className="stream-filter-tabs" role="tablist">
+                    <button
+                      className={`filter-tab-pill ${tabFilter === 'all' ? 'is-active' : ''}`}
+                      onClick={() => setTabFilter('all')}
+                    >
+                      All ({totalScreened})
+                    </button>
+                    <button
+                      className={`filter-tab-pill ${tabFilter === 'recommended' ? 'is-active' : ''}`}
+                      onClick={() => setTabFilter('recommended')}
+                    >
+                      Recommended ({topRecommendationsCount})
+                    </button>
+                    <button
+                      className={`filter-tab-pill ${tabFilter === 'review' ? 'is-active' : ''}`}
+                      onClick={() => setTabFilter('review')}
+                    >
+                      Review ({eligibleCount - topRecommendationsCount})
+                    </button>
+                    <button
+                      className={`filter-tab-pill ${tabFilter === 'excluded' ? 'is-active' : ''}`}
+                      onClick={() => setTabFilter('excluded')}
+                    >
+                      Excluded ({excludedCount})
+                    </button>
+                  </div>
                 </div>
 
-                {/* FILTER TABS */}
-                <div className="stream-filter-tabs" role="tablist">
-                  <button
-                    className={`filter-tab-pill ${tabFilter === 'all' ? 'is-active' : ''}`}
-                    onClick={() => setTabFilter('all')}
-                  >
-                    All ({totalScreened})
-                  </button>
-                  <button
-                    className={`filter-tab-pill ${tabFilter === 'recommended' ? 'is-active' : ''}`}
-                    onClick={() => setTabFilter('recommended')}
-                  >
-                    Recommended ({topRecommendationsCount})
-                  </button>
-                  <button
-                    className={`filter-tab-pill ${tabFilter === 'review' ? 'is-active' : ''}`}
-                    onClick={() => setTabFilter('review')}
-                  >
-                    Review ({eligibleCount - topRecommendationsCount})
-                  </button>
-                  <button
-                    className={`filter-tab-pill ${tabFilter === 'excluded' ? 'is-active' : ''}`}
-                    onClick={() => setTabFilter('excluded')}
-                  >
-                    Excluded ({excludedCount})
-                  </button>
+                {/* CANDIDATE CARDS LIST */}
+                <div className="candidates-list-stack">
+                  {filteredCandidates.map(({ candidate, compatibility }) => (
+                    <CandidateCard
+                      key={candidate.id}
+                      candidate={candidate}
+                      compatibility={compatibility}
+                      isShared={sharedIds.includes(candidate.id)}
+                      isOverrideShared={overrideCandidateIds.includes(candidate.id)}
+                      rejectionRecord={rejections[candidate.id]}
+                      onOpenEmailComposer={handleOpenEmailComposer}
+                      onOpenReject={(cand) => setRejectingCandidate(cand)}
+                      onOpenWhyDrawer={handleOpenWhyDrawer}
+                    />
+                  ))}
                 </div>
-              </div>
-
-              {/* CANDIDATE CARDS LIST */}
-              <div className="candidates-list-stack">
-                {filteredCandidates.map(({ candidate, compatibility }) => (
-                  <CandidateCard
-                    key={candidate.id}
-                    candidate={candidate}
-                    compatibility={compatibility}
-                    isShared={sharedIds.includes(candidate.id)}
-                    rejectionRecord={rejections[candidate.id]}
-                    onShare={handleShare}
-                    onOpenReject={(cand) => setRejectingCandidate(cand)}
-                    onOpenWhyDrawer={handleOpenWhyDrawer}
-                  />
-                ))}
-              </div>
-            </section>
-          </div>
-        </main>
+              </section>
+            </div>
+          </main>
+        )}
       </div>
 
       {/* "WHY THIS PROFILE?" SLIDE-OVER DRAWER */}
@@ -217,12 +287,21 @@ export const App: React.FC = () => {
         compatibility={drawerCompatibility}
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
-        onShare={(id) => {
-          handleShare(id);
-          setIsDrawerOpen(false);
-        }}
+        onOpenEmailComposer={handleOpenEmailComposer}
         isShared={drawerCandidate ? sharedIds.includes(drawerCandidate.id) : false}
       />
+
+      {/* EMAIL COMPOSER & OVERRIDE MODAL */}
+      {isEmailComposerOpen && composerCandidate && composerCompatibility && (
+        <EmailComposerModal
+          candidate={composerCandidate}
+          client={activeClient}
+          compatibility={composerCompatibility}
+          isOverride={isComposerOverride}
+          onClose={() => setIsEmailComposerOpen(false)}
+          onSend={handleSendEmail}
+        />
+      )}
 
       {/* REJECTION FEEDBACK MODAL */}
       {rejectingCandidate && (
